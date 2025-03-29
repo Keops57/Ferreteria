@@ -114,7 +114,8 @@ namespace Ferreteria
                             break;
 
                         case 5: // Eliminar un Producto
-                            Inventario.EliminarProducto("123");
+                            Inventario.EliminarProductoPorCodigo();
+                            GuardarDatos(20, 22);
                             break;
 
                         case 6: // Despedir a un empleado

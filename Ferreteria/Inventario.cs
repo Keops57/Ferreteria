@@ -104,9 +104,61 @@ namespace Ferreteria
         {
 
         }
-        public void EliminarProducto(string id)
+        public void EliminarProductoPorCodigo()
         {
+            try
+            {
+                Console.Clear();
+                Helpers.Borde(10, 8, 103, 20);
+                int x = 12, y = 11;
 
+                // Mostrar encabezado
+                Console.SetCursorPosition(x, y++);
+                Console.WriteLine("=== ELIMINAR PRODUCTO ===");
+                Console.SetCursorPosition(x, y++);
+                Console.Write("Ingrese el código del producto a eliminar: ");
+                string codigo = Console.ReadLine();
+
+                // Buscar producto
+                Producto productoAEliminar = Productos.FirstOrDefault(p => p.Id.Equals(codigo, StringComparison.OrdinalIgnoreCase));
+
+                if (productoAEliminar == null)
+                {
+                    Console.SetCursorPosition(x, y++);
+                    Console.Write("❌ Producto no encontrado");
+                    Console.ReadKey();
+                    return;
+                }
+
+                // Confirmar eliminación
+                Console.SetCursorPosition(x, y++);
+                Console.Write($"¿Eliminar {productoAEliminar.Nombre} (Código: {productoAEliminar.Id})? [S/N]: ");
+                string confirmacion = Console.ReadLine();
+
+                if (confirmacion.Equals("S", StringComparison.OrdinalIgnoreCase))
+                {
+                    // Eliminar de la lista en memoria
+                    Productos.Remove(productoAEliminar);
+
+                    // Actualizar JSON
+
+                    Console.SetCursorPosition(x, y++);
+                    Console.Write("✅ Producto eliminado correctamente");
+                }
+                else
+                {
+                    Console.SetCursorPosition(x, y++);
+                    Console.Write("❌ Eliminación cancelada");
+                }
+
+                Console.ReadKey();
+            }
+            catch (Exception ex)
+            {
+                Console.SetCursorPosition(12, 24);
+                Console.Write($"Error al eliminar producto: {ex.Message}");
+                Console.ReadKey();
+            }
         }
 
         public void ListarProductos()
