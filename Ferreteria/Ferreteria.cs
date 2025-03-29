@@ -36,6 +36,8 @@ namespace Ferreteria
                 Console.Clear();
                 Helpers.Borde(10, 9, 103, 18);
 
+                Vendedores = Vendedores.OrderByDescending(v => v.NumeroVentas).ToList();
+
                 int x = 12, y = 11; // Posición inicial del cursor
 
                 // Título y encabezados
@@ -158,8 +160,144 @@ namespace Ferreteria
 
         public void ListarVentas()
         {
+            try
+            {
+                Console.Clear();
+                Helpers.Borde(10, 9, 103, 18);
 
+                int x = 12, y = 11; // Posición inicial del cursor
+
+                // Título y encabezados
+                Console.SetCursorPosition(x, y++);
+                Console.WriteLine("=== LISTADO DE VENTAS ===");
+                Console.SetCursorPosition(x, y++);
+                Console.WriteLine($"Total ventas: {Facturas.Count}");
+                Console.SetCursorPosition(x, y++);
+                Console.WriteLine(new string('═', 90));
+
+                // Encabezados de columnas
+                Console.SetCursorPosition(x, y++);
+                Console.WriteLine("CÓDIGO FACTURA    NOMBRE.P".PadRight(20) +
+                                 "CANTIDAD.P".PadLeft(15) +
+                                 "CODIGO.V".PadLeft(15) +
+                                 "NOMBRE.V".PadLeft(15) +
+                                 "TOTAL".PadLeft(15));
+
+                Console.SetCursorPosition(x, y++);
+                Console.WriteLine(new string('─', 90));
+
+                // Lista de productos
+                foreach (var factura in Facturas)
+                {
+                    Console.SetCursorPosition(x, y++);
+                    Console.WriteLine(
+                        $"{factura.CodigoFactura.PadRight(20)} " +
+                        $"{factura.NombreProducto.PadRight(18)} " +
+                        $"{factura.Cantidad.ToString().PadRight(10)} " +
+                        $"{factura.NombreVendedor.ToString().PadLeft(5)}" +
+                        $"{factura.CodigoVendedor.ToString().PadLeft(15)} " +
+                        $"{factura.Total.ToString().PadLeft(12)}$");
+
+                    if (y >= 26) // Control para no sobrepasar el borde inferior
+                    {
+                        Console.SetCursorPosition(x, y++);
+                        Console.Write("-- PRESIONE CUALQUIER TECLA PARA CONTINUAR --");
+                        Console.ReadKey();
+                        y = 11; // Resetear posición
+                        Console.Clear();
+                        Helpers.Borde(10, 9, 103, 18);
+                        Console.SetCursorPosition(x, y++);
+                        Console.WriteLine("=== LISTADO DE VENTAS ===");
+                        Console.SetCursorPosition(x, y++);
+                        Console.WriteLine($"Total ventas: {Facturas.Count}");
+                        Console.SetCursorPosition(x, y++);
+                        Console.WriteLine(new string('═', 90));
+
+                        // Encabezados de columnas
+                        Console.SetCursorPosition(x, y++);
+                        Console.WriteLine("CÓDIGO FACTURA    NOMBRE.P".PadRight(20) +
+                                         "CANTIDAD.P".PadLeft(15) +
+                                         "CODIGO.V".PadLeft(15) +
+                                         "NOMBRE.V".PadLeft(15) +
+                                         "TOTAL".PadLeft(15));
+
+                        Console.SetCursorPosition(x, y++);
+                        Console.WriteLine(new string('─', 90));
+                    }
+                }
+
+                Console.SetCursorPosition(x, y + 2);
+                Console.Write("-- PRESIONE CUALQUIER TECLA PARA VOLVER AL MENÚ --");
+                Console.ReadKey();
+            }
+            catch (Exception ex)
+            {
+                Console.SetCursorPosition(12, 24);
+                Console.Write($"Error al listar ventas: {ex.Message}");
+                Console.ReadKey();
+            }
         }
+
+        public void Vender()
+        {
+
+            try
+            {
+                Console.Clear();
+                Helpers.Borde(10, 9, 103, 18);
+                Console.SetCursorPosition(11, 10); Console.Write("Quiere confirmar una venta?/n <1> Si <2> No: ");
+                if (!int.TryParse(Console.ReadLine(), out int opcion) || (opcion != 1 && opcion != 2))
+                {
+                    Helpers.MostrarError("Opción inválida. Intente nuevamente.");
+                    return;
+                }
+
+                if (opcion == 2) return;
+
+                int x = 11, y = 11;
+                var nuevaVenta = new Factura();
+
+                nuevaVenta.CodigoProducto = Helpers.LeerDato("Codigo del Producto: ", x, ref y);
+                nuevaVenta.Cantidad = int.Parse(Helpers.LeerDato("Cantidad del Producto a vender: ", x, ref y));
+                nuevaVenta.CodigoVendedor = Helpers.LeerDato("Codigo del Vendedor: ", x, ref y);
+
+
+                Producto productoAVender = Inventario.Productos.FirstOrDefault(p => p.Id.Equals(nuevaVenta.CodigoProducto, StringComparison.OrdinalIgnoreCase));
+
+                Vendedor vendedorAtendiendo = Vendedores.FirstOrDefault(v => v.Codigo.Equals(nuevaVenta.CodigoVendedor, StringComparison.OrdinalIgnoreCase));
+
+
+                if (ValidarVenta(nuevaVenta,productoAVender,vendedorAtendiendo))
+                {
+                    nuevaVenta.NombreProducto = productoAVender.Nombre;
+                    nuevaVenta.NombreVendedor = vendedorAtendiendo.Nombre;
+
+                    for (int i = 0; i < nuevaVenta.Cantidad; i++) 
+                    {
+                        nuevaVenta.Total += productoAVender.Precio;
+                        productoAVender.StockActual -= 1;
+                        productoAVender.CantidadVendido += 1;
+                    }
+
+                    vendedorAtendiendo.NumeroVentas += 1;
+
+                    if (productoAVender.StockActual <= productoAVender.StockMinimo) productoAVender.REPO = true;
+
+                    Facturas.Add(nuevaVenta);
+                    Console.SetCursorPosition(x, y + 2);
+                    Console.Write("¡Venta agregada exitosamente!");
+                    Console.ReadKey();
+                }
+            }
+            catch (Exception ex)
+            {
+                Helpers.MostrarError($"Error: {ex.Message}");
+            }
+
+            
+        }
+
+        #region Validaciones
         private bool ValidarVendedor(Vendedor vendedor)
         {
             if (string.IsNullOrWhiteSpace(vendedor.Nombre))
@@ -176,6 +314,43 @@ namespace Ferreteria
 
             return true;
         }
+
+        private bool ValidarVenta(Factura factura, Producto producto, Vendedor vendedor)
+        {
+            if (string.IsNullOrWhiteSpace(factura.CodigoProducto))
+            {
+                Helpers.MostrarError("El codigo no puede estar vacío");
+                return false;
+            }
+
+            if (Facturas.Any(f => f.CodigoFactura == factura.CodigoFactura))
+            {
+                Helpers.MostrarError("Ya existe una factura con este código");
+                return false;
+            }
+
+            if (producto == null)
+            {
+                Helpers.MostrarError("El producto a vender no existe");
+                return false;
+            }
+
+            if (producto.StockActual - factura.Cantidad <= 0)
+            {
+                Helpers.MostrarError("El producto a vender no tiene stock suficiente para vender");
+                return false;
+            }
+
+            if (vendedor == null)
+            {
+                Helpers.MostrarError("El vendedor no está en al nómina");
+                return false;
+            }
+
+            return true;
+        }
+
+        #endregion
         public void AgregarVendedor()
         {
             try
@@ -210,9 +385,7 @@ namespace Ferreteria
                 Helpers.MostrarError($"Error: {ex.Message}");
             }
         }
-
         #endregion
-
         public void GuardarDatos(int x,int y)
     {
         try
@@ -281,6 +454,8 @@ namespace Ferreteria
                             break;
 
                         case 4: // Procesar una Venta
+                            Vender();
+                            GuardarDatos(20, 22);
                             break;
 
                         case 5: // Eliminar un Producto
@@ -319,6 +494,7 @@ namespace Ferreteria
                                         break;
 
                                     case 5: // Listar las ventas realizadas
+                                        ListarVentas();
                                         break;
 
                                     case 6: // Listar los trabajadores y sus ventas

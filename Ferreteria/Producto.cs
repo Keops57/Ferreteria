@@ -21,6 +21,7 @@ namespace Ferreteria
         public string Descripcion { get; set; }
         public bool REPO { get; set; } = false;
 
+        public int CantidadVendido { get; set; } = 0;
 
         #endregion
 
