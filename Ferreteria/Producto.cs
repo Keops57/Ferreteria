@@ -16,22 +16,23 @@ namespace Ferreteria
         public string Id { get; set; }
         public string Nombre { get; set; }
         public double Precio { get; set; }
-        public int Stock_Actual { get; set; }
-        public int Stock_Minimo { get; set; }
+        public int StockActual { get; set; }
+        public int StockMinimo { get; set; }
         public string Descripcion { get; set; }
+
 
         #endregion
 
         #region Constructores
 
-        public Producto(string I, string N, double P, int SA, int SM, string D)
+        public Producto()/*string I, string N, double P, int SA, int SM, string D*/
         {
-            Precio = P;
-            Nombre = N;
-            Id = I;
-            Stock_Actual = SA;
-            Stock_Minimo = SM;
-            Descripcion = D;
+            //Precio = P;
+            //Nombre = N;
+            //Id = I;
+            //Stock_Actual = SA;
+            //Stock_Minimo = SM;
+            //Descripcion = D;
         }
 
         #endregion

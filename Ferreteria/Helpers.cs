@@ -54,7 +54,13 @@ namespace Ferreteria
             Borde(10, 9, 103, 18);
             Console.SetCursorPosition(x, y++); Console.Write("Bienvenido al menu de opciones, ¿Qué quiere hacer?");
             Console.SetCursorPosition(x, y++); Console.Write("<1> Agregar un Producto al Inventario");
-            Console.SetCursorPosition(x, y++); Console.Write("<2> Salir");
+            Console.SetCursorPosition(x, y++); Console.Write("<2> Buscar un Producto por Codigo");
+            Console.SetCursorPosition(x, y++); Console.Write("<3> Modificar Datos de un Producto");
+            Console.SetCursorPosition(x, y++); Console.Write("<4> Procesar una Venta");
+            Console.SetCursorPosition(x, y++); Console.Write("<5> Eliminar un Producto usando el Codigo");
+            Console.SetCursorPosition(x, y++); Console.Write("<6> Despedir a un Vendedor");
+            Console.SetCursorPosition(x, y++); Console.Write("<7> Listas");
+            Console.SetCursorPosition(x, y++); Console.Write("<8> Salir");
             Console.SetCursorPosition(x, y++); Console.Write("Ingrese su opcion: ");
         }
         public static void SubInterfaz()
@@ -63,10 +69,31 @@ namespace Ferreteria
             Console.Clear();
             Borde(10, 9, 103, 18);
             Console.SetCursorPosition(x, y++); Console.Write("Opciones: ");
-            Console.SetCursorPosition(x, y++); Console.Write("<1> Npi");
-            Console.SetCursorPosition(x, y++); Console.Write("<2> Salir");
+            Console.SetCursorPosition(x, y++); Console.Write("<1> Listar todos los productos");
+            Console.SetCursorPosition(x, y++); Console.Write("<2> Listar los productos mas vendidos");
+            Console.SetCursorPosition(x, y++); Console.Write("<3> Listar los productos menos vendidos");
+            Console.SetCursorPosition(x, y++); Console.Write("<4> Listar los productos que necesitan reponerse");
+            Console.SetCursorPosition(x, y++); Console.Write("<5> Listar las ventas realizadas");
+            Console.SetCursorPosition(x, y++); Console.Write("<6> Listar los trabajadores y sus ventas");
+            Console.SetCursorPosition(x, y++); Console.Write("<7> Salir");
             Console.SetCursorPosition(x, ++y); Console.Write("Ingrese su eleccion: ");
         }
+        public static void MostrarError(string mensaje)
+        {
+            // Funcion que permite el mostrar errores de forma general en cualquier parte del codigo
+            Console.SetCursorPosition(40, 22);
+            Console.Write(mensaje);
+            Console.ReadKey();
+        }
+
+        public static string LeerDato(string prompt, int x, ref int y)
+        {
+            // Funcion que permite el leer datos de forma general en cualquier parte del codigo
+            Console.SetCursorPosition(x, y++);
+            Console.Write(prompt);
+            return Console.ReadLine();
+        }
+
 
     }
 }
