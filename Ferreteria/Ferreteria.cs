@@ -31,17 +31,184 @@ namespace Ferreteria
 
         public void ListarVendedores()
         {
+            try
+            {
+                Console.Clear();
+                Helpers.Borde(10, 9, 103, 18);
 
+                int x = 12, y = 11; // Posición inicial del cursor
+
+                // Título y encabezados
+                Console.SetCursorPosition(x, y++);
+                Console.WriteLine("=== LISTADO DE VENDEDORES ===");
+                Console.SetCursorPosition(x, y++);
+                Console.WriteLine($"Total registros: {Vendedores.Count}");
+                Console.SetCursorPosition(x, y++);
+                Console.WriteLine(new string('═', 90));
+
+                // Encabezados de columnas
+                Console.SetCursorPosition(x, y++);
+                Console.WriteLine("CÓDIGO    NOMBRE".PadRight(30) +
+                                 "NUMERO VENTAS".PadLeft(15));
+
+                Console.SetCursorPosition(x, y++);
+                Console.WriteLine(new string('─', 90));
+
+                // Lista de productos
+                foreach (var vendedor in Vendedores)
+                {
+                    Console.SetCursorPosition(x, y++);
+                    Console.WriteLine(
+                        $"{vendedor.Codigo.PadRight(10)} " +
+                        $"{vendedor.Nombre.PadRight(20)} " +
+                        $"{vendedor.NumeroVentas.ToString().PadLeft(12)}");
+
+                    if (y >= 26) // Control para no sobrepasar el borde inferior
+                    {
+                        Console.SetCursorPosition(x, y++);
+                        Console.Write("-- PRESIONE CUALQUIER TECLA PARA CONTINUAR --");
+                        Console.ReadKey();
+                        y = 11; // Resetear posición
+                        Console.Clear();
+                        Helpers.Borde(10, 9, 103, 18);
+                        Console.SetCursorPosition(x, y++);
+                        Console.WriteLine("=== LISTADO DE VENDEDORES ===");
+                        Console.SetCursorPosition(x, y++);
+                        Console.WriteLine($"Total registros: {Vendedores.Count}");
+                        Console.SetCursorPosition(x, y++);
+                        Console.WriteLine(new string('═', 90));
+
+                        Console.SetCursorPosition(x, y++);
+                        Console.WriteLine("CÓDIGO    NOMBRE".PadRight(30) +
+                                         "NUMERO VENTAS".PadLeft(15) );
+
+                        Console.SetCursorPosition(x, y++);
+                        Console.WriteLine(new string('─', 90));
+                    }
+                }
+
+                Console.SetCursorPosition(x, y + 2);
+                Console.Write("-- PRESIONE CUALQUIER TECLA PARA VOLVER AL MENÚ --");
+                Console.ReadKey();
+            }
+            catch (Exception ex)
+            {
+                Console.SetCursorPosition(12, 24);
+                Console.Write($"Error al listar vendedores: {ex.Message}");
+                Console.ReadKey();
+            }
         }
 
         public void EliminarVenderor()
         {
+            try
+            {
+                Console.Clear();
+                Helpers.Borde(10, 9, 103, 18);
+                int x = 12, y = 11;
 
+                // Mostrar encabezado
+                Console.SetCursorPosition(x, y++);
+                Console.WriteLine("=== ELIMINAR VENDEDOR ===");
+                Console.SetCursorPosition(x, y++);
+                Console.Write("Ingrese el código del vendedor a eliminar: ");
+                string codigo = Console.ReadLine();
+
+                // Buscar producto
+                Vendedor vendedorAEliminar = Vendedores.FirstOrDefault(v => v.Codigo.Equals(codigo, StringComparison.OrdinalIgnoreCase));
+
+                if (vendedorAEliminar == null)
+                {
+                    Console.SetCursorPosition(x, y++);
+                    Console.Write("❌ Vendedor no encontrado");
+                    Console.ReadKey();
+                    return;
+                }
+
+                // Confirmar eliminación
+                Console.SetCursorPosition(x, y++);
+                Console.Write($"¿Eliminar {vendedorAEliminar.Nombre} (Código: {vendedorAEliminar.Codigo})? [S/N]: ");
+                string confirmacion = Console.ReadLine();
+
+                if (confirmacion.Equals("S", StringComparison.OrdinalIgnoreCase))
+                {
+                    // Eliminar de la lista en memoria
+                    Vendedores.Remove(vendedorAEliminar);
+
+                    // Actualizar JSON
+
+                    Console.SetCursorPosition(x, y++);
+                    Console.Write("✅ Vendedor eliminado correctamente");
+                }
+                else
+                {
+                    Console.SetCursorPosition(x, y++);
+                    Console.Write("❌ Eliminación cancelada");
+                }
+
+                Console.ReadKey();
+            }
+            catch (Exception ex)
+            {
+                Console.SetCursorPosition(12, 24);
+                Console.Write($"Error al despedir empleado: {ex.Message}");
+                Console.ReadKey();
+            }
         }
 
         public void ListarVentas()
         {
 
+        }
+        private bool ValidarVendedor(Vendedor vendedor)
+        {
+            if (string.IsNullOrWhiteSpace(vendedor.Nombre))
+            {
+                Helpers.MostrarError("El nombre no puede estar vacío");
+                return false;
+            }
+
+            if (Vendedores.Any(p => p.Codigo == vendedor.Codigo))
+            {
+                Helpers.MostrarError("Ya existe un vendedor con este código");
+                return false;
+            }
+
+            return true;
+        }
+        public void AgregarVendedor()
+        {
+            try
+            {
+                Console.Clear();
+                Helpers.Borde(10, 9, 103, 18);
+                Console.SetCursorPosition(11, 10); Console.Write("Quiere agregar un vendedor?/n <1> Si <2> No: ");
+                if (!int.TryParse(Console.ReadLine(), out int opcion) || (opcion != 1 && opcion != 2))
+                {
+                    Helpers.MostrarError("Opción inválida. Intente nuevamente.");
+                    return;
+                }
+
+                if (opcion == 2) return;
+
+                int x = 11, y = 11;
+                var nuevoVendedor = new Vendedor();
+
+                nuevoVendedor.Nombre = Helpers.LeerDato("Nombre del Vendedor: ", x, ref y);
+                nuevoVendedor.Codigo = Helpers.LeerDato("Código del Vendedor: ", x, ref y);
+
+                if (ValidarVendedor(nuevoVendedor))
+                {
+                    Vendedores.Add(nuevoVendedor);
+                    Console.SetCursorPosition(x, y + 2);
+                    Console.Write("¡Vendedor agregado exitosamente!");
+                    Console.ReadKey();
+                }
+            }
+            catch (Exception ex)
+            {
+                Helpers.MostrarError($"Error: {ex.Message}");
+            }
         }
 
         #endregion
@@ -105,9 +272,12 @@ namespace Ferreteria
                             break;
 
                         case 2: // Buscar un producto
+                            Inventario.BuscarProducto();
                             break;
 
                         case 3: //Modificar un producto
+                            Inventario.ActualizarProducto();
+                            GuardarDatos(20, 22);
                             break;
 
                         case 4: // Procesar una Venta
@@ -118,10 +288,17 @@ namespace Ferreteria
                             GuardarDatos(20, 22);
                             break;
 
-                        case 6: // Despedir a un empleado
+                        case 6: // Contratar a un empleado
+                            AgregarVendedor();
+                            GuardarDatos(20, 22);
                             break;
 
-                        case 7://Listas
+                        case 7: // Despedir a un empleado
+                            EliminarVenderor();
+                            GuardarDatos(20, 22);
+                            break;
+
+                        case 8://Listas
                             do
                             {
                                 Helpers.SubInterfaz();
@@ -145,6 +322,7 @@ namespace Ferreteria
                                         break;
 
                                     case 6: // Listar los trabajadores y sus ventas
+                                        ListarVendedores();
                                         break;
 
                                     case 7:// Salir
@@ -161,7 +339,7 @@ namespace Ferreteria
                             key = true;
                             break;
 
-                        case 8: //Salir
+                        case 9: //Salir
                             key = false;
                             Console.Clear();
                             Helpers.Borde(20, 17, 80, 7);

@@ -11,7 +11,7 @@ namespace Ferreteria
         #region Atributos
         public string Codigo { get; set; }
         public string Nombre { get; set; }
-        public int NumeroVentas { get; set; }
+        public int NumeroVentas { get; set; } = 0;
 
         #endregion
 

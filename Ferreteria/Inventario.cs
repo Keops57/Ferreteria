@@ -95,21 +95,128 @@ namespace Ferreteria
             return true;
         }
 
-        public void BuscarProducto(string id)
+        public void BuscarProducto()
         {
+            try
+            {
+                Console.Clear();
+                Helpers.Borde(10, 9, 103, 18);
+                int x = 12, y = 11;
 
+                // Mostrar encabezado
+                Console.SetCursorPosition(x, y++);
+                Console.WriteLine("=== BUSCAR PRODUCTO ===");
+                Console.SetCursorPosition(x, y++);
+                Console.Write("Ingrese el código del producto a buscar: ");
+                string codigo = Console.ReadLine();
+                Console.SetCursorPosition(x, y++);
+                Console.Write(new string('═', 90));
+
+                // Encabezados de columnas
+                Console.SetCursorPosition(x, y++);
+                Console.Write("CÓDIGO    NOMBRE".PadRight(30) +
+                                 "PRECIO".PadLeft(15) +
+                                 "STOCK ACT".PadLeft(15) +
+                                 "STOCK MÍN".PadLeft(15));
+
+                Console.SetCursorPosition(x, y++);
+                Console.Write(new string('─', 90));
+
+                // Buscar producto
+                Producto productoABuscar = Productos.FirstOrDefault(p => p.Id.Equals(codigo, StringComparison.OrdinalIgnoreCase));
+
+                if (productoABuscar == null)
+                {
+                    Console.SetCursorPosition(x, y++);
+                    Console.Write("❌ Producto no encontrado");
+                    Console.ReadKey();
+                    return;
+                }
+
+                Console.SetCursorPosition(x, y++);
+                Console.Write(
+                    $"{productoABuscar.Id.PadRight(10)} " +
+                    $"{productoABuscar.Nombre.PadRight(20)} " +
+                    $"{productoABuscar.Precio.ToString().PadLeft(12)}$" +
+                    $"{productoABuscar.StockActual.ToString().PadLeft(12)} " +
+                    $"{productoABuscar.StockMinimo.ToString().PadLeft(12)}");
+
+                Console.ReadKey();
+            }
+            catch (Exception ex)
+            {
+                Console.SetCursorPosition(12, 24);
+                Console.Write($"Error al encontrar producto: {ex.Message}");
+                Console.ReadKey();
+            }
         }
 
-        public void ActualizarProducto(string id)
+        public void ActualizarProducto()
         {
+            try
+            {
+                Console.Clear();
+                Helpers.Borde(10, 9, 103, 18);
+                int x = 12, y = 11;
 
+                // Mostrar encabezado
+                Console.SetCursorPosition(x, y++);
+                Console.WriteLine("=== ACTUALIZAR PRODUCTO ===");
+                Console.SetCursorPosition(x, y++);
+                Console.Write("Ingrese el código del producto a actualizar: ");
+                string codigo = Console.ReadLine();
+
+                // Buscar producto
+                Producto productoAEditar = Productos.FirstOrDefault(p => p.Id.Equals(codigo, StringComparison.OrdinalIgnoreCase));
+
+                if (productoAEditar == null)
+                {
+                    Console.SetCursorPosition(x, y++);
+                    Console.Write("❌ Producto no encontrado");
+                    Console.ReadKey();
+                    return;
+                }
+                Console.SetCursorPosition(x, y++);
+                productoAEditar.StockActual = int.Parse(Helpers.LeerDato("Stock Actual: ", x, ref y));
+                Console.SetCursorPosition(x, y++);
+                productoAEditar.Precio = double.Parse(Helpers.LeerDato("Precio: ", x, ref y));
+
+
+
+                // Confirmar Actualizacion
+                Console.SetCursorPosition(x, y++);
+                Console.Write($"¿Editar {productoAEditar.Nombre} (Código: {productoAEditar.Id})? [S/N]: ");
+                string confirmacion = Console.ReadLine();
+
+                if (confirmacion.Equals("S", StringComparison.OrdinalIgnoreCase) && ValidarProducto(productoAEditar))
+                {
+
+                    Console.SetCursorPosition(x ,y++);
+                    Console.Write("✅ Producto actualizado correctamente");
+                }
+                else
+                {
+                    Console.Clear();
+                    Helpers.Borde(10, 9, 103, 18);
+                    Console.SetCursorPosition(x+35, y++);
+                    Console.Write("❌ Actualizacion cancelada");
+                }
+
+                Console.ReadKey();
+            }
+            catch (Exception ex)
+            {
+                Console.SetCursorPosition(12, 24);
+                Console.Write($"Error al actualizar producto: {ex.Message}");
+                Console.ReadKey();
+            }
         }
         public void EliminarProductoPorCodigo()
         {
             try
             {
                 Console.Clear();
-                Helpers.Borde(10, 8, 103, 20);
+                Helpers.Borde(10, 9, 103, 18);
                 int x = 12, y = 11;
 
                 // Mostrar encabezado
@@ -160,13 +267,12 @@ namespace Ferreteria
                 Console.ReadKey();
             }
         }
-
         public void ListarProductos()
         {
             try
             {
                 Console.Clear();
-                Helpers.Borde(10, 8, 103, 20);
+                Helpers.Borde(10, 9, 103, 18);
 
                 int x = 12, y = 11; // Posición inicial del cursor
 
@@ -206,7 +312,7 @@ namespace Ferreteria
                         Console.ReadKey();
                         y = 11; // Resetear posición
                         Console.Clear();
-                        Helpers.Borde(10, 8, 103, 20);
+                        Helpers.Borde(10, 9, 103, 18);
                         Console.SetCursorPosition(x, y++);
                         Console.WriteLine("=== LISTADO DE PRODUCTOS ===");
                         Console.SetCursorPosition(x, y++);

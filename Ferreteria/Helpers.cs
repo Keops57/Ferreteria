@@ -58,9 +58,10 @@ namespace Ferreteria
             Console.SetCursorPosition(x, y++); Console.Write("<3> Modificar Datos de un Producto");
             Console.SetCursorPosition(x, y++); Console.Write("<4> Procesar una Venta");
             Console.SetCursorPosition(x, y++); Console.Write("<5> Eliminar un Producto usando el Codigo");
-            Console.SetCursorPosition(x, y++); Console.Write("<6> Despedir a un Vendedor");
-            Console.SetCursorPosition(x, y++); Console.Write("<7> Listas");
-            Console.SetCursorPosition(x, y++); Console.Write("<8> Salir");
+            Console.SetCursorPosition(x, y++); Console.Write("<6> Contratar a un Vendedor");
+            Console.SetCursorPosition(x, y++); Console.Write("<7> Despedir a un Vendedor");
+            Console.SetCursorPosition(x, y++); Console.Write("<8> Listas");
+            Console.SetCursorPosition(x, y++); Console.Write("<9> Salir");
             Console.SetCursorPosition(x, y++); Console.Write("Ingrese su opcion: ");
         }
         public static void SubInterfaz()
@@ -81,7 +82,7 @@ namespace Ferreteria
         public static void MostrarError(string mensaje)
         {
             // Funcion que permite el mostrar errores de forma general en cualquier parte del codigo
-            Console.SetCursorPosition(40, 22);
+            Console.SetCursorPosition(35, 22);
             Console.Write(mensaje);
             Console.ReadKey();
         }
