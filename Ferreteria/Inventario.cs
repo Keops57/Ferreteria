@@ -100,6 +100,7 @@ namespace Ferreteria
             try
             {
                 Console.Clear();
+                Titulos.MostrarBuscar();
                 Helpers.Borde(10, 9, 103, 18);
                 int x = 12, y = 11;
 
@@ -156,6 +157,7 @@ namespace Ferreteria
             try
             {
                 Console.Clear();
+                Titulos.MostrarActualizar();
                 Helpers.Borde(10, 9, 103, 18);
                 int x = 12, y = 11;
 
@@ -216,6 +218,7 @@ namespace Ferreteria
             try
             {
                 Console.Clear();
+                Titulos.MostrarEliminar();
                 Helpers.Borde(10, 9, 103, 18);
                 int x = 12, y = 11;
 
@@ -345,17 +348,212 @@ namespace Ferreteria
 
         public void ListarProductosMasVendidos()
         {
+            try
+            {
+                Console.Clear();
+                Helpers.Borde(10, 9, 103, 18);
 
+                int x = 12, y = 11; // Posición inicial del cursor
+
+                // Título y encabezados
+                Console.SetCursorPosition(x, y++);
+                Console.WriteLine("=== TOP 3 PRODUCTOS ===");
+                Console.SetCursorPosition(x, y++);
+                Console.WriteLine("Los 3 productos mas vendidos");
+                Console.SetCursorPosition(x, y++);
+                Console.WriteLine(new string('═', 90));
+
+                // Encabezados de columnas
+                Console.SetCursorPosition(x, y++);
+                Console.WriteLine("POSICIÓN  CÓDIGO    NOMBRE".PadRight(30) +
+                                 "VENTAS".PadLeft(15) +
+                                 "% DEL TOTAL".PadLeft(15));
+
+                Console.SetCursorPosition(x, y++);
+                Console.WriteLine(new string('─', 90));
+
+                var productosMasVendidos = Productos.OrderByDescending(p => p.CantidadVendido)
+                                              .Take(3)
+                                              .ToList();
+
+                int totalVentas = Productos.Sum(p => p.CantidadVendido);
+
+                
+
+                for (int i = 0; i< productosMasVendidos.Count;i++)
+                {
+                    var producto = productosMasVendidos[i];
+
+                    double porcentaje = totalVentas > 0 ? (producto.CantidadVendido * 100.0) / totalVentas : 0;
+
+                    Console.SetCursorPosition(x, y++);
+                    Console.WriteLine(
+                        $"{i + 1,-9} " +  // Posición (1°, 2°, 3°)
+                        $"{producto.Id.PadRight(10)} " +
+                        $"{producto.Nombre.PadRight(20)} " +
+                        $"{producto.CantidadVendido.ToString().PadLeft(12)} " +
+                        $"{porcentaje.ToString("F2").PadLeft(12)}%");
+                }
+
+                if (!productosMasVendidos.Any())
+                {
+                    Console.SetCursorPosition(x, y++);
+                    Console.WriteLine("No hay productos que se hayan vendido aun");
+                }
+
+                Console.SetCursorPosition(x, y + 2);
+                Console.Write("-- PRESIONE CUALQUIER TECLA PARA VOLVER AL MENÚ --");
+                Console.ReadKey();
+            }
+            catch (Exception ex)
+            {
+                Console.SetCursorPosition(12, 24);
+                Console.Write($"Error al listar productos: {ex.Message}");
+                Console.ReadKey();
+            }
         }
 
         public void ListarProductosMenosVendidos()
         {
+            try
+            {
+                Console.Clear();
+                Helpers.Borde(10, 9, 103, 18);
 
+                int x = 12, y = 11; // Posición inicial del cursor
+
+                // Título y encabezados
+                Console.SetCursorPosition(x, y++);
+                Console.WriteLine("=== BOTTOM 3 PRODUCTOS ===");
+                Console.SetCursorPosition(x, y++);
+                Console.WriteLine("Los 3 productos menos vendidos");
+                Console.SetCursorPosition(x, y++);
+                Console.WriteLine(new string('═', 90));
+
+                // Encabezados de columnas
+                Console.SetCursorPosition(x, y++);
+                Console.WriteLine("POSICIÓN  CÓDIGO    NOMBRE".PadRight(30) +
+                                 "VENTAS".PadLeft(15) +
+                                 "% DEL TOTAL".PadLeft(15));
+
+                Console.SetCursorPosition(x, y++);
+                Console.WriteLine(new string('─', 90));
+
+                var productosMenosVendidos = Productos.OrderBy(p => p.CantidadVendido)
+                                              .Take(3)
+                                              .ToList();
+
+                int totalVentas = Productos.Sum(p => p.CantidadVendido);
+
+
+
+                for (int i = 0; i < productosMenosVendidos.Count; i++)
+                {
+                    var producto = productosMenosVendidos[i];
+
+                    double porcentaje = totalVentas > 0 ? (producto.CantidadVendido * 100.0) / totalVentas : 0;
+
+                    Console.SetCursorPosition(x, y++);
+                    Console.WriteLine(
+                        $"{i + 1,-9} " +  // Posición (1°, 2°, 3°)
+                        $"{producto.Id.PadRight(10)} " +
+                        $"{producto.Nombre.PadRight(20)} " +
+                        $"{producto.CantidadVendido.ToString().PadLeft(12)} " +
+                        $"{porcentaje.ToString("F2").PadLeft(12)}%");
+                }
+
+                if (!productosMenosVendidos.Any())
+                {
+                    Console.SetCursorPosition(x, y++);
+                    Console.WriteLine("No hay productos que se hayan vendido aun");
+                }
+
+                Console.SetCursorPosition(x, y + 2);
+                Console.Write("-- PRESIONE CUALQUIER TECLA PARA VOLVER AL MENÚ --");
+                Console.ReadKey();
+            }
+            catch (Exception ex)
+            {
+                Console.SetCursorPosition(12, 24);
+                Console.Write($"Error al listar productos: {ex.Message}");
+                Console.ReadKey();
+            }
         }
 
         public void ListarProductosREPO()
         {
+            try
+            {
+                Console.Clear();
+                Helpers.Borde(10, 9, 103, 18);
 
+                int x = 12, y = 11; // Posición inicial del cursor
+
+                // Título y encabezados
+                Console.SetCursorPosition(x, y++);
+                Console.WriteLine("=== PRODUCTOS A SURTIR ===");
+                Console.SetCursorPosition(x, y++);
+                Console.WriteLine("(Stock actual <= Stock mínimo)");
+                Console.SetCursorPosition(x, y++);
+                Console.WriteLine(new string('═', 90));
+
+                // Encabezados de columnas
+                Console.SetCursorPosition(x, y++);
+                Console.WriteLine("CÓDIGO    NOMBRE".PadRight(30) +
+                                 "STOCK ACT".PadLeft(15) +
+                                 "STOCK MIN".PadLeft(15) +
+                                 "A REPONER".PadLeft(15));
+
+                Console.SetCursorPosition(x, y++);
+                Console.WriteLine(new string('─', 90));
+
+                // Filtrar y listar productos que necesitan reposición
+                var productosReponer = Productos.Where(p => p.REPO) // Determina las condiciones para agregar elementos
+                                              .OrderByDescending(p => p.StockActual) 
+                                              .ToList();
+
+                foreach (var producto in productosReponer)
+                {
+                    int reponer = producto.StockMinimo + 1 - producto.StockActual;
+
+                    Console.SetCursorPosition(x, y++);
+                    Console.WriteLine(
+                        $"{producto.Id.PadRight(10)} " +
+                        $"{producto.Nombre.PadRight(20)} " +
+                        $"{producto.StockActual.ToString().PadLeft(12)} " +
+                        $"{producto.StockMinimo.ToString().PadLeft(12)} " +
+                        $"{reponer.ToString().PadLeft(12)}");
+
+                    if (y >= 26)
+                    {
+                        Console.SetCursorPosition(x, y++);
+                        Console.Write("-- PRESIONE CUALQUIER TECLA PARA CONTINUAR --");
+                        Console.ReadKey();
+                        y = 11; // Resetear posición
+                        Console.Clear();
+                        Helpers.Borde(10, 9, 103, 18);
+
+                        Console.SetCursorPosition(x, y++);
+                        Console.WriteLine("=== PRODUCTOS A SURTIR ===");
+                    }
+                }
+
+                if (!productosReponer.Any())
+                {
+                    Console.SetCursorPosition(x, y++);
+                    Console.WriteLine("No hay productos que requieran reponerse");
+                }
+
+                Console.SetCursorPosition(x, y + 2);
+                Console.Write("-- PRESIONE CUALQUIER TECLA PARA VOLVER AL MENÚ --");
+                Console.ReadKey();
+            }
+            catch (Exception ex)
+            {
+                Console.SetCursorPosition(12, 24);
+                Console.Write($"Error al listar productos: {ex.Message}");
+                Console.ReadKey();
+            }
         }
 
         #endregion

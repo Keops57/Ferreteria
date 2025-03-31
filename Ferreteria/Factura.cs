@@ -17,7 +17,6 @@ namespace Ferreteria
         public string CodigoVendedor { get; set; }
 
         public int Cantidad { get; set; }
-        //public DateTime Fecha { get; set; } = DateTime.Now;
         public double Total { get; set; }
         #endregion
         public Factura()
@@ -25,7 +24,7 @@ namespace Ferreteria
             CodigoFactura = GenerarCodigoAleatorio();
         }
 
-        public string GenerarCodigoAleatorio()
+        private string GenerarCodigoAleatorio()
         {
             Random random = new Random();
             const string caracteres = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";

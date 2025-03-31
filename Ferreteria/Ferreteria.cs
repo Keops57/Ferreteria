@@ -28,12 +28,46 @@ namespace Ferreteria
         #endregion
 
         #region Metodos
+        public void AgregarVendedor()
+        {
+            try
+            {
+                Console.Clear();
+                Helpers.Borde(10, 9, 103, 18);
+                Console.SetCursorPosition(11, 10); Console.Write("Quiere agregar un vendedor?/n <1> Si <2> No: ");
+                if (!int.TryParse(Console.ReadLine(), out int opcion) || (opcion != 1 && opcion != 2))
+                {
+                    Helpers.MostrarError("Opción inválida. Intente nuevamente.");
+                    return;
+                }
 
+                if (opcion == 2) return;
+
+                int x = 11, y = 11;
+                var nuevoVendedor = new Vendedor();
+
+                nuevoVendedor.Nombre = Helpers.LeerDato("Nombre del Vendedor: ", x, ref y);
+                nuevoVendedor.Codigo = Helpers.LeerDato("Código del Vendedor: ", x, ref y);
+
+                if (ValidarVendedor(nuevoVendedor))
+                {
+                    Vendedores.Add(nuevoVendedor);
+                    Console.SetCursorPosition(x, y + 2);
+                    Console.Write("¡Vendedor agregado exitosamente!");
+                    Console.ReadKey();
+                }
+            }
+            catch (Exception ex)
+            {
+                Helpers.MostrarError($"Error: {ex.Message}");
+            }
+        }
         public void ListarVendedores()
         {
             try
             {
                 Console.Clear();
+                Titulos.MostrarTituloVendedores();
                 Helpers.Borde(10, 9, 103, 18);
 
                 Vendedores = Vendedores.OrderByDescending(v => v.NumeroVentas).ToList();
@@ -100,8 +134,7 @@ namespace Ferreteria
                 Console.ReadKey();
             }
         }
-
-        public void EliminarVenderor()
+        public void EliminarVendedor()
         {
             try
             {
@@ -163,6 +196,7 @@ namespace Ferreteria
             try
             {
                 Console.Clear();
+                Titulos.MostrarTituloVentas();
                 Helpers.Borde(10, 9, 103, 18);
 
                 int x = 12, y = 11; // Posición inicial del cursor
@@ -244,6 +278,7 @@ namespace Ferreteria
             try
             {
                 Console.Clear();
+                Titulos.MostrarVender();
                 Helpers.Borde(10, 9, 103, 18);
                 Console.SetCursorPosition(11, 10); Console.Write("Quiere confirmar una venta?/n <1> Si <2> No: ");
                 if (!int.TryParse(Console.ReadLine(), out int opcion) || (opcion != 1 && opcion != 2))
@@ -272,12 +307,11 @@ namespace Ferreteria
                     nuevaVenta.NombreProducto = productoAVender.Nombre;
                     nuevaVenta.NombreVendedor = vendedorAtendiendo.Nombre;
 
-                    for (int i = 0; i < nuevaVenta.Cantidad; i++) 
-                    {
-                        nuevaVenta.Total += productoAVender.Precio;
-                        productoAVender.StockActual -= 1;
-                        productoAVender.CantidadVendido += 1;
-                    }
+                    nuevaVenta.Total = productoAVender.Precio * nuevaVenta.Cantidad;
+
+                    productoAVender.StockActual -= nuevaVenta.Cantidad;
+                    productoAVender.CantidadVendido += nuevaVenta.Cantidad;
+                    vendedorAtendiendo.NumeroVentas += 1;
 
                     vendedorAtendiendo.NumeroVentas += 1;
 
@@ -335,7 +369,7 @@ namespace Ferreteria
                 return false;
             }
 
-            if (producto.StockActual - factura.Cantidad <= 0)
+            if (producto.StockActual - factura.Cantidad < 0)
             {
                 Helpers.MostrarError("El producto a vender no tiene stock suficiente para vender");
                 return false;
@@ -351,67 +385,33 @@ namespace Ferreteria
         }
 
         #endregion
-        public void AgregarVendedor()
+
+        public void GuardarDatos(int x, int y)
         {
             try
             {
-                Console.Clear();
-                Helpers.Borde(10, 9, 103, 18);
-                Console.SetCursorPosition(11, 10); Console.Write("Quiere agregar un vendedor?/n <1> Si <2> No: ");
-                if (!int.TryParse(Console.ReadLine(), out int opcion) || (opcion != 1 && opcion != 2))
+                var datos = new
                 {
-                    Helpers.MostrarError("Opción inválida. Intente nuevamente.");
-                    return;
-                }
+                    Vendedores,
+                    Facturas,
+                    Productos = Inventario.Productos
+                };
 
-                if (opcion == 2) return;
+                string json = JsonConvert.SerializeObject(datos, Formatting.Indented);
 
-                int x = 11, y = 11;
-                var nuevoVendedor = new Vendedor();
+                // Asegurar que el directorio existe
+                Directory.CreateDirectory(Path.GetDirectoryName(RUTA_ARCHIVO));
 
-                nuevoVendedor.Nombre = Helpers.LeerDato("Nombre del Vendedor: ", x, ref y);
-                nuevoVendedor.Codigo = Helpers.LeerDato("Código del Vendedor: ", x, ref y);
+                // Guardar el archivo
+                File.WriteAllText(RUTA_ARCHIVO, json);
 
-                if (ValidarVendedor(nuevoVendedor))
-                {
-                    Vendedores.Add(nuevoVendedor);
-                    Console.SetCursorPosition(x, y + 2);
-                    Console.Write("¡Vendedor agregado exitosamente!");
-                    Console.ReadKey();
-                }
+                Console.SetCursorPosition(x, y); Console.WriteLine($"Datos guardados");
             }
             catch (Exception ex)
             {
-                Helpers.MostrarError($"Error: {ex.Message}");
+                Console.SetCursorPosition(x, y); Console.WriteLine($"Error al guardar datos: {ex.Message}");
             }
         }
-        #endregion
-        public void GuardarDatos(int x,int y)
-    {
-        try
-        {
-            var datos = new
-            {
-                Vendedores,
-                Facturas,
-                Productos = Inventario.Productos
-            };
-
-            string json = JsonConvert.SerializeObject(datos, Formatting.Indented);
-            
-            // Asegurar que el directorio existe
-            Directory.CreateDirectory(Path.GetDirectoryName(RUTA_ARCHIVO));
-            
-            // Guardar el archivo
-            File.WriteAllText(RUTA_ARCHIVO, json);
-
-            Console.SetCursorPosition(x, y); Console.WriteLine($"Datos guardados");
-        }
-        catch (Exception ex)
-        {
-            Console.SetCursorPosition(x, y); Console.WriteLine($"Error al guardar datos: {ex.Message}");
-        }
-    }
 
         public void CargarDatos()
         {
@@ -425,6 +425,9 @@ namespace Ferreteria
                 Inventario.Productos = datos.Productos ?? new List<Producto>();
             }
         }
+
+        #endregion
+
 
         public void Run()
         {
@@ -445,6 +448,7 @@ namespace Ferreteria
                             break;
 
                         case 2: // Buscar un producto
+
                             Inventario.BuscarProducto();
                             break;
 
@@ -469,7 +473,7 @@ namespace Ferreteria
                             break;
 
                         case 7: // Despedir a un empleado
-                            EliminarVenderor();
+                            EliminarVendedor();
                             GuardarDatos(20, 22);
                             break;
 
@@ -485,12 +489,15 @@ namespace Ferreteria
                                         break;
 
                                     case 2: // Listar los productos mas vendidos
+                                        Inventario.ListarProductosMasVendidos();
                                         break;
 
                                     case 3: //Listar los productos menos vendidos
+                                        Inventario.ListarProductosMenosVendidos();
                                         break;
 
                                     case 4: // Listar los productos que necesitan reponerse
+                                        Inventario.ListarProductosREPO();
                                         break;
 
                                     case 5: // Listar las ventas realizadas

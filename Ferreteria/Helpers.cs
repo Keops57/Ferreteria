@@ -47,10 +47,15 @@ namespace Ferreteria
 
             }
         }
+
+        
         public static void InterfazP()
         {
             int x = 11, y = 10;
             Console.Clear();
+
+            Titulos.MostrarTituloMenuSimple();
+
             Borde(10, 9, 103, 18);
             Console.SetCursorPosition(x, y++); Console.Write("Bienvenido al menu de opciones, ¿Qué quiere hacer?");
             Console.SetCursorPosition(x, y++); Console.Write("<1> Agregar un Producto al Inventario");
@@ -68,6 +73,9 @@ namespace Ferreteria
         {
             int x = 11, y = 10;
             Console.Clear();
+
+            Titulos.MostrarTituloSecundario();
+
             Borde(10, 9, 103, 18);
             Console.SetCursorPosition(x, y++); Console.Write("Opciones: ");
             Console.SetCursorPosition(x, y++); Console.Write("<1> Listar todos los productos");
