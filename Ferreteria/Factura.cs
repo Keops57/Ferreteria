@@ -24,12 +24,15 @@ namespace Ferreteria
             CodigoFactura = GenerarCodigoAleatorio();
         }
 
-        private string GenerarCodigoAleatorio()
+        public string GenerarCodigoAleatorio()
         {
             Random random = new Random();
-            const string caracteres = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-            return new string(Enumerable.Repeat(caracteres, 6)
-                .Select(s => s[random.Next(s.Length)]).ToArray());
+            string letras = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+            return "F" +
+                   random.Next(0, 10000).ToString("D4") +  // 4 dígitos con ceros a la izquierda
+                   new string(Enumerable.Repeat(letras, 2)
+                       .Select(s => s[random.Next(s.Length)]).ToArray());
         }
     }
 }

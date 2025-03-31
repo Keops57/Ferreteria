@@ -26,6 +26,7 @@ namespace Ferreteria
             try
             {
                 Console.Clear();
+                Titulos.MostrarAgregar();
                 Helpers.Borde(10, 9, 103, 18);
                 Console.SetCursorPosition(11, 10); Console.Write("Quiere agregar un producto?/n <1> Si <2> No: ");
                 if (!int.TryParse(Console.ReadLine(), out int opcion) || (opcion != 1 && opcion != 2))
@@ -62,6 +63,13 @@ namespace Ferreteria
 
         private bool ValidarProducto(Producto producto)
         {
+            if (!Helpers.ValidarCodigoProducto(producto.Id))
+            {
+                string ejemplo = Helpers.GenerarEjemploProducto();
+                Helpers.MostrarError($"Formato inválido. Debe ser P + 3 números + 1 letra. Ej: {ejemplo}");
+                return false;
+            }
+
             if (string.IsNullOrWhiteSpace(producto.Nombre))
             {
                 Helpers.MostrarError("El nombre no puede estar vacío");
@@ -275,6 +283,7 @@ namespace Ferreteria
             try
             {
                 Console.Clear();
+                Titulos.MostrarProductos();
                 Helpers.Borde(10, 9, 103, 18);
 
                 int x = 12, y = 11; // Posición inicial del cursor
@@ -351,6 +360,7 @@ namespace Ferreteria
             try
             {
                 Console.Clear();
+                Titulos.MostrarMas();
                 Helpers.Borde(10, 9, 103, 18);
 
                 int x = 12, y = 11; // Posición inicial del cursor
@@ -418,6 +428,7 @@ namespace Ferreteria
             try
             {
                 Console.Clear();
+                Titulos.MostrarMenos();
                 Helpers.Borde(10, 9, 103, 18);
 
                 int x = 12, y = 11; // Posición inicial del cursor
@@ -485,6 +496,7 @@ namespace Ferreteria
             try
             {
                 Console.Clear();
+                Titulos.MostrarRepo();
                 Helpers.Borde(10, 9, 103, 18);
 
                 int x = 12, y = 11; // Posición inicial del cursor

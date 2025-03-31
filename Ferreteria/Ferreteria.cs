@@ -33,6 +33,7 @@ namespace Ferreteria
             try
             {
                 Console.Clear();
+                Titulos.MostrarContratar();
                 Helpers.Borde(10, 9, 103, 18);
                 Console.SetCursorPosition(11, 10); Console.Write("Quiere agregar un vendedor?/n <1> Si <2> No: ");
                 if (!int.TryParse(Console.ReadLine(), out int opcion) || (opcion != 1 && opcion != 2))
@@ -139,6 +140,7 @@ namespace Ferreteria
             try
             {
                 Console.Clear();
+                Titulos.MostrarDespedir();
                 Helpers.Borde(10, 9, 103, 18);
                 int x = 12, y = 11;
 
@@ -225,12 +227,12 @@ namespace Ferreteria
                 {
                     Console.SetCursorPosition(x, y++);
                     Console.WriteLine(
-                        $"{factura.CodigoFactura.PadRight(20)} " +
-                        $"{factura.NombreProducto.PadRight(18)} " +
-                        $"{factura.Cantidad.ToString().PadRight(10)} " +
-                        $"{factura.NombreVendedor.ToString().PadLeft(5)}" +
-                        $"{factura.CodigoVendedor.ToString().PadLeft(15)} " +
-                        $"{factura.Total.ToString().PadLeft(12)}$");
+                        $"{factura.CodigoFactura.PadRight(15)} " +
+                        $"{factura.NombreProducto.PadRight(25)} " +
+                        $"{factura.Cantidad.ToString().PadRight(5)} " +
+                        $"{factura.CodigoVendedor.ToString().PadLeft(3)} " +
+                        $"{factura.NombreVendedor.ToString().PadLeft(18)}" +
+                        $"{factura.Total.ToString().PadLeft(10)}$");
 
                     if (y >= 26) // Control para no sobrepasar el borde inferior
                     {
@@ -340,7 +342,14 @@ namespace Ferreteria
                 return false;
             }
 
-            if (Vendedores.Any(p => p.Codigo == vendedor.Codigo))
+            if (!Helpers.ValidarCodigoVendedor(vendedor.Codigo))
+            {
+                string ejemplo = Helpers.GenerarEjemploVendedor();
+                Helpers.MostrarError($"Formato inválido. Use V + 3 números + 1 letra. Ej: {ejemplo}");
+                return false;
+            }
+
+            if (Vendedores.Any(v => v.Codigo.Equals(vendedor.Codigo, StringComparison.OrdinalIgnoreCase)))
             {
                 Helpers.MostrarError("Ya existe un vendedor con este código");
                 return false;
@@ -525,9 +534,11 @@ namespace Ferreteria
                         case 9: //Salir
                             key = false;
                             Console.Clear();
+                            Titulos.USMLogo(35, 2, 100);
                             Helpers.Borde(20, 17, 80, 7);
-                            GuardarDatos(55, 19);
-                            Console.SetCursorPosition(55, 21); Console.WriteLine("Adios :D");
+                            GuardarDatos(45, 19);
+                            Console.SetCursorPosition(45, 21); Console.WriteLine("Adios :D");
+                            Console.SetCursorPosition(45, 23);
                             break;
                         default:
                             Console.SetCursorPosition(40, 22); Console.Write("Valor invalido, intente de nuevo! ");
