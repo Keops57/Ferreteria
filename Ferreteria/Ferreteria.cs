@@ -48,7 +48,7 @@ namespace Ferreteria
                 var nuevoVendedor = new Vendedor();
 
                 nuevoVendedor.Nombre = Helpers.LeerDato("Nombre del Vendedor: ", x, ref y);
-                nuevoVendedor.Codigo = Helpers.LeerDato("Código del Vendedor: ", x, ref y);
+                nuevoVendedor.Codigo = Helpers.LeerDato("Código del Vendedor (Sigue la estructura V + 3numeros + 1letra): ", x, ref y);
 
                 if (ValidarVendedor(nuevoVendedor))
                 {

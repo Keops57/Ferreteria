@@ -41,7 +41,7 @@ namespace Ferreteria
                 var nuevoProducto = new Producto();
 
                 nuevoProducto.Nombre = Helpers.LeerDato("Nombre del Producto: ", x, ref y);
-                nuevoProducto.Id = Helpers.LeerDato("Código del Producto: ", x, ref y);
+                nuevoProducto.Id = Helpers.LeerDato("Código del Producto: (Sigue la estructura P + 3numeros + 1letra): ", x, ref y);
                 nuevoProducto.Precio = double.Parse(Helpers.LeerDato("Precio del Producto: ", x, ref y));
                 nuevoProducto.StockActual = int.Parse(Helpers.LeerDato("Stock Actual: ", x, ref y));
                 nuevoProducto.StockMinimo = int.Parse(Helpers.LeerDato("Stock Mínimo: ", x, ref y));
