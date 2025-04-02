@@ -107,6 +107,7 @@ namespace Ferreteria
                         Console.ReadKey();
                         y = 11; // Resetear posición
                         Console.Clear();
+                        Titulos.MostrarTituloVendedores();
                         Helpers.Borde(10, 9, 103, 18);
                         Console.SetCursorPosition(x, y++);
                         Console.WriteLine("=== LISTADO DE VENDEDORES ===");
@@ -241,6 +242,7 @@ namespace Ferreteria
                         Console.ReadKey();
                         y = 11; // Resetear posición
                         Console.Clear();
+                        Titulos.MostrarTituloVentas();
                         Helpers.Borde(10, 9, 103, 18);
                         Console.SetCursorPosition(x, y++);
                         Console.WriteLine("=== LISTADO DE VENTAS ===");

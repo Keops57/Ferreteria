@@ -47,7 +47,7 @@ namespace Ferreteria
                 nuevoProducto.StockMinimo = int.Parse(Helpers.LeerDato("Stock Mínimo: ", x, ref y));
                 nuevoProducto.Descripcion = Helpers.LeerDato("Descripcion: ", x, ref y);
 
-                if (ValidarProducto(nuevoProducto))
+                if (ValidarProducto(nuevoProducto,true))
                 {
                     Productos.Add(nuevoProducto);
                     Console.SetCursorPosition(x, y + 2);
@@ -61,7 +61,7 @@ namespace Ferreteria
             }
         }
 
-        private bool ValidarProducto(Producto producto)
+        private bool ValidarProducto(Producto producto, bool agregar)
         {
             if (!Helpers.ValidarCodigoProducto(producto.Id))
             {
@@ -94,9 +94,15 @@ namespace Ferreteria
                 return false;
             }
             
-            if (Productos.Any(p => p.Id == producto.Id))
+            if (Productos.Any(p => p.Id == producto.Id) && agregar)
             {
                 Helpers.MostrarError("Ya existe un producto con este código");
+                return false;
+            }
+
+            if (!Productos.Any(p => p.Id == producto.Id) && !agregar)
+            {
+                Helpers.MostrarError("No existe un producto con este código");
                 return false;
             }
 
@@ -198,7 +204,7 @@ namespace Ferreteria
                 Console.Write($"¿Editar {productoAEditar.Nombre} (Código: {productoAEditar.Id})? [S/N]: ");
                 string confirmacion = Console.ReadLine();
 
-                if (confirmacion.Equals("S", StringComparison.OrdinalIgnoreCase) && ValidarProducto(productoAEditar))
+                if (confirmacion.Equals("S", StringComparison.OrdinalIgnoreCase) && ValidarProducto(productoAEditar,false))
                 {
 
                     Console.SetCursorPosition(x ,y++);
@@ -324,6 +330,7 @@ namespace Ferreteria
                         Console.ReadKey();
                         y = 11; // Resetear posición
                         Console.Clear();
+                        Titulos.MostrarProductos();
                         Helpers.Borde(10, 9, 103, 18);
                         Console.SetCursorPosition(x, y++);
                         Console.WriteLine("=== LISTADO DE PRODUCTOS ===");
@@ -401,7 +408,7 @@ namespace Ferreteria
                         $"{i + 1,-9} " +  // Posición (1°, 2°, 3°)
                         $"{producto.Id.PadRight(10)} " +
                         $"{producto.Nombre.PadRight(20)} " +
-                        $"{producto.CantidadVendido.ToString().PadLeft(12)} " +
+                        $"{producto.CantidadVendido.ToString().PadLeft(5)} " +
                         $"{porcentaje.ToString("F2").PadLeft(12)}%");
                 }
 
@@ -469,7 +476,7 @@ namespace Ferreteria
                         $"{i + 1,-9} " +  // Posición (1°, 2°, 3°)
                         $"{producto.Id.PadRight(10)} " +
                         $"{producto.Nombre.PadRight(20)} " +
-                        $"{producto.CantidadVendido.ToString().PadLeft(12)} " +
+                        $"{producto.CantidadVendido.ToString().PadLeft(5)} " +
                         $"{porcentaje.ToString("F2").PadLeft(12)}%");
                 }
 
@@ -524,6 +531,15 @@ namespace Ferreteria
                                               .OrderByDescending(p => p.StockActual) 
                                               .ToList();
 
+                foreach (var prod in productosReponer)
+                { 
+                    if (prod.REPO && prod.StockActual >= prod.StockMinimo)
+                    {
+                        prod.REPO = false;
+                        productosReponer.Remove(prod);
+                    }
+                }
+
                 foreach (var producto in productosReponer)
                 {
                     int reponer = producto.StockMinimo + 1 - producto.StockActual;
@@ -543,6 +559,7 @@ namespace Ferreteria
                         Console.ReadKey();
                         y = 11; // Resetear posición
                         Console.Clear();
+                        Titulos.MostrarRepo();
                         Helpers.Borde(10, 9, 103, 18);
 
                         Console.SetCursorPosition(x, y++);
